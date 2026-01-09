@@ -1,1 +1,3 @@
-export class User {}
+import { UserModel } from '../../../generated/prisma/models/User';
+
+export type User = UserModel;
