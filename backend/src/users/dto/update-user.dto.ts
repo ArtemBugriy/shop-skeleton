@@ -1,3 +1,3 @@
-import { UserUpdateInput } from '../../../generated/prisma/models/User';
+import { UserUpdateInput } from '@generated/prisma/models/User';
 
 export type UpdateUserDto = UserUpdateInput;
