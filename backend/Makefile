@@ -15,3 +15,10 @@ migrate-dev:
 # Run this command to create a new migration without a specific name, you can specify it during the prompt
 migrate-dev-no-param:
 	npx prisma migrate dev
+
+# Run this command to seed the database
+prisma-seed:
+	npx prisma db seed
+
+generate-password-hash:
+	npx tsx scripts/generatePasswordHash.ts
