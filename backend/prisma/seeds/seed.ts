@@ -1,9 +1,9 @@
 import { PrismaClient } from '@prisma-generated/prisma/client';
-import { PrismaPg } from '@prisma/adapter-pg';
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
 
 class OrmService extends PrismaClient {
   constructor() {
-    const adapter = new PrismaPg({ url: process.env.DATABASE_URL });
+    const adapter = new PrismaBetterSqlite3({ url: process.env.DATABASE_URL });
     super({ adapter });
   }
 }
@@ -21,7 +21,7 @@ async function main() {
   await orm.user.create({
     data: {
       email: 'admin@admin.admin',
-      role: 'asd',
+      role: 'ADMIN',
       password: '$2b$10$fzlKGjzqYp2QNet0n5AAlOEsfVRaxYR/TDWUnfohlcLdq6VIvRVjy',
     },
   });
