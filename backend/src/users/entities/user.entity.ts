@@ -1,3 +1,3 @@
-import { UserModel } from '@generated/prisma/models/User';
+import { UserModel } from '@prisma-generated/prisma/models/User';
 
 export type User = UserModel;

@@ -1,3 +1,3 @@
-import { UserCreateInput } from '@generated/prisma/models/User';
+import { UserCreateInput } from '@prisma-generated/prisma/models/User';
 
 export type CreateUserDto = UserCreateInput;
