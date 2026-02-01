@@ -20,7 +20,7 @@ services:
       interval: 5s
       timeout: 3s
       retries: 30
-    command: sh -c "npx prisma db push && npm run start:dev"
+    command: sh -c "npm run start:dev"
 #    command: sh -c "npx prisma generate && npx prisma db push && npm run start:dev"
 
   frontend:

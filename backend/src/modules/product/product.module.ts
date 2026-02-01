@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { ProductController } from './product.controller';
-import { OrmService } from '../orm.service';
+import { OrmService } from '@infrastructure/database/orm.service';
 
 @Module({
   controllers: [ProductController],
