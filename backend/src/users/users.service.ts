@@ -5,7 +5,7 @@ import { OrmService } from '../orm.service';
 
 @Injectable()
 export class UsersService {
-  constructor(private orm: OrmService) {}
+  constructor(private readonly orm: OrmService) {}
 
   create(createUserDto: CreateUserDto) {
     return this.orm.user.create({
@@ -18,17 +18,17 @@ export class UsersService {
   }
 
   findOne(id: number) {
-    return this.orm.user.findUnique({ where: { id } });
+    return this.orm.user.findUnique({ where: { id: id } });
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
     return this.orm.user.update({
-      where: { id },
+      where: { id: id },
       data: updateUserDto,
     });
   }
 
   remove(id: number) {
-    return this.orm.user.delete({ where: { id } });
+    return this.orm.user.delete({ where: { id: id } });
   }
 }
