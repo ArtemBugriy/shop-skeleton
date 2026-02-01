@@ -1,3 +1,4 @@
-import { ProductUpdateInput } from '@prisma-generated/prisma/models/Product';
+import { PartialType } from '@nestjs/mapped-types';
+import { CreateProductDto } from './create-product.dto';
 
-export type UpdateProductDto = ProductUpdateInput;
+export class UpdateProductDto extends PartialType(CreateProductDto) {}

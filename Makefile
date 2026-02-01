@@ -1,7 +1,5 @@
 COMPOSE_BASE = docker compose -f docker-compose.dev.yml
 
-.PHONY: docker-up-dev docker-build-dev docker-up-recreate-dev docker-rebuild-dev docker-rebuild-dev-nocache docker-reset-dev docker-down-dev docker-logs-dev
-
 # Быстрый старт: поднимет сервисы, при необходимости пересоберёт образы (может использовать кэш).
 docker-up:
 	$(COMPOSE_BASE) up -d --build
