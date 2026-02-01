@@ -16,7 +16,7 @@ services:
       - ./backend/dev.db:/usr/src/app/dev.db
       - backend_node_modules:/usr/src/app/node_modules
     healthcheck:
-      test: ["CMD-SHELL", "curl -fsS http://localhost:3000/health || exit 1"]
+      test: ["CMD-SHELL", "curl -fsS http://localhost:3000/healthcheck || exit 1"]
       interval: 5s
       timeout: 3s
       retries: 30
