@@ -1,0 +1,9 @@
+@if(productList.hasValue()) {
+  @for (product of productList.value(); track product.id) {
+    <app-product-list-item [item]="product"></app-product-list-item>
+  }
+} @else if (productList.error()) {
+  <div>Could not load product list information</div>
+} @else if (productList.isLoading()) {
+  <div>Loading product list info...</div>
+}
