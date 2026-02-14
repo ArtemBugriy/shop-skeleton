@@ -13,10 +13,23 @@
   - `sudo certbot --nginx -d example.com`
 
 ## Docker compose env
-- Copy `.env.prod.example` to `.env` on the VPS.
-- Ensure `IMAGE_NAMESPACE` matches your GHCR repo.
-- Set `IMAGE_TAG` to `latest` or a specific tag/sha.
+- `.env` is generated during CD from GitHub Secrets.
+- Ensure the secrets in `ops/.env.ci.example` are configured in the repo.
 
 ## Ports
 - Expose only `80`/`443` on the VPS firewall.
 - Keep `3000`/`4000` bound to localhost or block externally.
+
+## Automation
+- Run the setup script on the VPS to apply all steps above.
+- Required: `DOMAIN` (your domain).
+- Optional: `EMAIL` (for Let's Encrypt), `INSTALL_CERTBOT=true`, `SETUP_UFW=true`.
+
+```bash
+DOMAIN=example.com EMAIL=admin@example.com INSTALL_CERTBOT=true SETUP_UFW=true \
+  ./ops/setup_vps.sh
+```
+
+Notes:
+- The script updates Nginx config, enables the site, reloads Nginx, creates `.env` if missing, and can install TLS.
+- It expects to run inside the repo or with `APP_DIR` pointing to the repo root.
