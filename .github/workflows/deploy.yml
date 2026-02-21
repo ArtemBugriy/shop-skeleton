@@ -11,13 +11,17 @@ permissions:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAMESPACE: ${{ toLower(github.repository) }}
+  IMAGE_NAMESPACE: ${{ github.repository }}
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Normalize image namespace
+        run: |
+          echo "IMAGE_NAMESPACE=$(echo \"${{ github.repository }}\" | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_ENV"
 
       - uses: docker/setup-buildx-action@v3
 
