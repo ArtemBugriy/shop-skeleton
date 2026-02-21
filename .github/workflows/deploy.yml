@@ -65,23 +65,44 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
-            cd ${{ secrets.VPS_APP_DIR }}
+            set -e
+            export GITHUB_REPOSITORY=${{ github.repository }}
+            export GH_CLONE_TOKEN=${{ secrets.GH_CLONE_TOKEN }}
+            export APP_DIR=${{ secrets.VPS_APP_DIR }}
+            if ! command -v git >/dev/null 2>&1; then
+              if command -v apt-get >/dev/null 2>&1; then
+                sudo apt-get update
+                sudo apt-get install -y git
+              else
+                echo "git not found and apt-get unavailable; aborting." >&2
+                exit 1
+              fi
+            fi
+            if [ ! -d "${APP_DIR}/.git" ]; then
+              mkdir -p "${APP_DIR}"
+              if [ -n "${GH_CLONE_TOKEN}" ]; then
+                REPO_URL="https://x-access-token:${GH_CLONE_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+              else
+                REPO_URL="https://github.com/${GITHUB_REPOSITORY}.git"
+              fi
+              git clone "${REPO_URL}" "${APP_DIR}"
+            fi
+            cd "${APP_DIR}"
             export DOMAIN=${{ secrets.VPS_DOMAIN }}
             export EMAIL=${{ secrets.VPS_EMAIL }}
             export INSTALL_CERTBOT=${{ secrets.INSTALL_CERTBOT }}
             export SETUP_UFW=${{ secrets.SETUP_UFW }}
             export RUN_VPS_SETUP=${{ secrets.RUN_VPS_SETUP }}
-            export APP_DIR=${{ secrets.VPS_APP_DIR }}
             if [ "${RUN_VPS_SETUP}" = "true" ]; then
               if [ -n "${DOMAIN}" ]; then
-                ./ops/setup_vps.sh
+                bash ./ops/setup_vps.sh
               else
                 echo "VPS_DOMAIN not set; skipping VPS setup script."
               fi
             else
               echo "RUN_VPS_SETUP not true; skipping VPS setup script."
             fi
-            export IMAGE_NAMESPACE=${{ env.IMAGE_NAMESPACE }}
+            export IMAGE_NAMESPACE=$(echo "${GITHUB_REPOSITORY}" | tr '[:upper:]' '[:lower:]')
             export IMAGE_TAG=${{ github.ref_type == 'tag' && github.ref_name || github.sha }}
             export DATABASE_URL=${{ secrets.DATABASE_URL }}
             cat > .env <<EOF

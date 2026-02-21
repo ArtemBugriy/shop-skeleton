@@ -15,31 +15,51 @@ NGINX_CONF_LINK="${NGINX_CONF_LINK:-/etc/nginx/sites-enabled/shop.conf}"
 INSTALL_CERTBOT="${INSTALL_CERTBOT:-false}"
 SETUP_UFW="${SETUP_UFW:-false}"
 
-if [[ -z "${DOMAIN}" ]]; then
-  echo "DOMAIN is required (e.g., DOMAIN=example.com)." >&2
-  exit 1
-fi
-
-if ! command -v nginx >/dev/null 2>&1; then
-  echo "nginx is not installed; skipping reverse proxy setup." >&2
-  exit 1
-fi
-
-if [[ ! -f "${NGINX_CONF_SRC}" ]]; then
-  echo "Missing nginx config template at ${NGINX_CONF_SRC}." >&2
-  exit 1
-fi
-
-if [[ ! -d "${APP_DIR}" ]]; then
-  echo "APP_DIR not found: ${APP_DIR}." >&2
-  exit 1
-fi
-
 if [[ "${EUID}" -ne 0 ]]; then
   SUDO="sudo"
 else
   SUDO=""
 fi
+
+if [[ -z "${DOMAIN}" ]]; then
+  echo "DOMAIN is required (e.g., DOMAIN=example.com)." >&2
+  exit 1
+fi
+
+# Install nginx if missing (Ubuntu/Debian supported).
+if ! command -v nginx >/dev/null 2>&1; then
+  if command -v apt-get >/dev/null 2>&1; then
+    ${SUDO} apt-get update
+    ${SUDO} apt-get install -y nginx
+  else
+    echo "nginx is not installed and apt-get is unavailable; aborting." >&2
+    exit 1
+  fi
+fi
+
+# Install Docker if missing (Ubuntu/Debian supported).
+if ! command -v docker >/dev/null 2>&1; then
+  if command -v apt-get >/dev/null 2>&1; then
+    ${SUDO} apt-get update
+    ${SUDO} apt-get install -y ca-certificates curl gnupg
+    ${SUDO} install -m 0755 -d /etc/apt/keyrings
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | ${SUDO} gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+    ${SUDO} chmod a+r /etc/apt/keyrings/docker.gpg
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo \"$VERSION_CODENAME\") stable" | ${SUDO} tee /etc/apt/sources.list.d/docker.list >/dev/null
+    ${SUDO} apt-get update
+    ${SUDO} apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+  else
+    echo "docker is not installed and apt-get is unavailable; aborting." >&2
+    exit 1
+  fi
+fi
+
+# Ensure docker compose plugin exists.
+if ! docker compose version >/dev/null 2>&1; then
+  echo "docker compose plugin not found; ensure docker-compose-plugin is installed." >&2
+  exit 1
+fi
+
 
 TMP_CONF="$(mktemp)"
 trap 'rm -f "${TMP_CONF}"' EXIT
