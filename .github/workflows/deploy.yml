@@ -13,7 +13,7 @@ permissions:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAMESPACE: ${{ github.repository }}
+  IMAGE_NAMESPACE: ${{ toLower(github.repository) }}
 
 jobs:
   build-and-push:
