@@ -67,6 +67,8 @@ jobs:
           script: |
             set -e
             export GITHUB_REPOSITORY=${{ github.repository }}
+            export GIT_REF_TYPE=${{ github.ref_type }}
+            export GIT_REF_NAME=${{ github.ref_name }}
             export GH_CLONE_TOKEN=${{ secrets.GH_CLONE_TOKEN }}
             export APP_DIR=${{ secrets.VPS_APP_DIR }}
             if ! command -v git >/dev/null 2>&1; then
@@ -88,6 +90,12 @@ jobs:
               git clone "${REPO_URL}" "${APP_DIR}"
             fi
             cd "${APP_DIR}"
+            git fetch --all --tags
+            if [ "${GIT_REF_TYPE}" = "tag" ]; then
+              git checkout -f "${GIT_REF_NAME}"
+            else
+              git reset --hard "origin/${GIT_REF_NAME}"
+            fi
             export DOMAIN=${{ secrets.VPS_DOMAIN }}
             export EMAIL=${{ secrets.VPS_EMAIL }}
             export INSTALL_CERTBOT=${{ secrets.INSTALL_CERTBOT }}
