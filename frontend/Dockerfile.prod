@@ -14,9 +14,14 @@ RUN (npm ci) || (rm -rf "$NPM_CONFIG_CACHE" /root/.npm && npm ci)
 FROM node:22.22.0-bookworm-slim AS build
 WORKDIR /usr/src/app
 
+# Build-time config (injected from CI)
+ARG API_URL
+
 COPY --from=deps /usr/src/app/node_modules ./node_modules
 COPY . .
-RUN npm run build
+
+# Expose API_URL only for this layer where `scripts/set-env.ts` runs
+RUN API_URL="$API_URL" npm run build
 
 FROM node:22.22.0-bookworm-slim AS runtime
 WORKDIR /usr/src/app

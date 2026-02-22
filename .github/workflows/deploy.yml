@@ -49,6 +49,8 @@ jobs:
           context: ./frontend
           file: ./frontend/Dockerfile.prod
           push: true
+          build-args: |
+            API_URL=${{ secrets.API_URL }}
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAMESPACE }}/shop-frontend:${{ github.sha }}
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAMESPACE }}/shop-frontend:latest
