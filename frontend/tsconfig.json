@@ -14,6 +14,7 @@
     "importHelpers": true,
     "target": "ES2022",
     "module": "preserve",
+    "baseUrl": ".",
     "paths": {
       "@app/*": ["./src/app/*"],
       "@modules/*": ["./src/modules/*"],
@@ -35,6 +36,9 @@
     },
     {
       "path": "./tsconfig.spec.json"
+    },
+    {
+      "path": "./tsconfig.scripts.json"
     }
   ]
 }
