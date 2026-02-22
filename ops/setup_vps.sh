@@ -14,6 +14,7 @@ NGINX_CONF_DST="${NGINX_CONF_DST:-/etc/nginx/sites-available/shop.conf}"
 NGINX_CONF_LINK="${NGINX_CONF_LINK:-/etc/nginx/sites-enabled/shop.conf}"
 INSTALL_CERTBOT="${INSTALL_CERTBOT:-false}"
 SETUP_UFW="${SETUP_UFW:-false}"
+SSH_PORT="${SSH_PORT:-22}"
 
 if [[ "${EUID}" -ne 0 ]]; then
   SUDO="sudo"
@@ -95,6 +96,7 @@ fi
 
 if [[ "${SETUP_UFW}" == "true" ]]; then
   if command -v ufw >/dev/null 2>&1; then
+    ${SUDO} ufw allow "${SSH_PORT}/tcp"
     ${SUDO} ufw allow 80/tcp
     ${SUDO} ufw allow 443/tcp
     ${SUDO} ufw --force enable
