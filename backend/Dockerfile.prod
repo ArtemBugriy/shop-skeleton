@@ -43,5 +43,8 @@ COPY --from=build /usr/src/app/prisma.config.ts ./prisma.config.ts
 
 RUN mkdir -p /usr/src/app/data
 
+# Fail fast with a readable message if the built entrypoint isn't present
+RUN test -f /usr/src/app/dist/src/main.js
+
 EXPOSE 3000
-CMD ["node", "dist/main"]
+CMD ["node", "dist/src/main.js"]

@@ -1,4 +1,5 @@
 COMPOSE_BASE = docker compose -f docker-compose.dev.yml
+COMPOSE_PROD = docker compose -f docker-compose.prod.yml
 
 # Быстрый старт: поднимет сервисы, при необходимости пересоберёт образы (может использовать кэш).
 docker-up:
@@ -31,3 +32,26 @@ docker-down:
 # Логи dev окружения (последние 200 строк).
 docker-logs:
 	$(COMPOSE_BASE) logs --tail=200 --no-color
+
+# --- Production helpers ---
+# Usage:
+#   make prod-up IMAGE_TAG=<sha-or-version>
+#   make prod-restart IMAGE_TAG=<sha-or-version>
+# IMAGE_NAMESPACE defaults to artembugriy/shop-skeleton (see docker-compose.prod.yml)
+
+prod-pull:
+	$(COMPOSE_PROD) pull
+
+prod-up:
+	$(COMPOSE_PROD) pull
+	$(COMPOSE_PROD) up -d
+
+prod-restart:
+	$(COMPOSE_PROD) pull
+	$(COMPOSE_PROD) up -d --force-recreate
+
+prod-logs:
+	$(COMPOSE_PROD) logs --tail=200 --no-color
+
+prod-down:
+	$(COMPOSE_PROD) down
