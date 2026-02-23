@@ -20,5 +20,14 @@ prisma-generate:
 prisma-seed:
 	npx prisma db seed
 
+prisma-reset:
+	npx prisma migrate reset --force
+
+prisma-reload:
+	make prisma-reset
+	make prisma-generate
+	make migrate-dev-no-param
+	make prisma-seed
+
 generate-password-hash:
 	npx tsx scripts/generatePasswordHash.ts
