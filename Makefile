@@ -55,3 +55,12 @@ prod-logs:
 
 prod-down:
 	$(COMPOSE_PROD) down
+
+# Удалить все образы, не используемые ни одним контейнером (безопасная очистка после деплоя).
+prod-prune:
+	docker image prune -af --filter "until=1h"
+
+# Полная очистка Docker-ресурсов: неиспользуемые образы, контейнеры, сети, build-кэш.
+# ВНИМАНИЕ: не удаляет тома (volumes), данные сохраняются.
+prod-clean:
+	docker system prune -af --filter "until=1h"
