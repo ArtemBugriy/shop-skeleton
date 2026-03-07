@@ -53,6 +53,10 @@ prod-restart:
 prod-logs:
 	$(COMPOSE_PROD) logs --tail=200 --no-color
 
+# Показать, сколько места занимают логи контейнеров на диске.
+prod-logs-size:
+	du -sh /var/lib/docker/containers/*/*-json.log 2>/dev/null | sort -h
+
 prod-down:
 	$(COMPOSE_PROD) down
 
